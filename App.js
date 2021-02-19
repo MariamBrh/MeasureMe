@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import * as tf from '@tensorflow/tfjs';
-import '@tensorflow/tfjs-react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -13,21 +11,6 @@ const Stack = createStackNavigator();
 
 
 export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isTfReady: false,
-      mobilenetClasses: [],
-    };
-  }
-
-
-  async componentDidMount() {
-    await tf.ready();
-    this.setState({
-      isTfReady: true
-    });
-  }
 
 
   renderInitialization() {
