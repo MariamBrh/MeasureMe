@@ -4,28 +4,31 @@ import * as tf from '@tensorflow/tfjs';
 import * as bodyPix from '@tensorflow-models/body-pix';
 import {fetch} from '@tensorflow/tfjs-react-native';
 import * as jpeg from 'jpeg-js'
+import {BodyPix} from "@tensorflow-models/body-pix";
+import {Pose} from "@tensorflow-models/body-pix/dist/types";
 
 
-let segmentationModel;
-let segmentation;
+let segmentationModel: BodyPix;
+let segmentation: Pose[];
 
 export default class Segmentation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isTfReady: false,
-            mobilenetClasses: [],
-            image: this.props.route.params.capturedImage,
+            measures: [],
+            image: this.props.route.params.capturedImage
         };
     }
 
     async componentDidMount() {
         await tf.ready();
         segmentationModel = await this.loadSegmentationModel();
-        const mobileNetPrediction = await this.makeSegmentation();
+        await this.makeSegmentation();
+        const dist = await this.getMeasures();
         this.setState({
             isTfReady: true,
-            mobilenetClasses: mobileNetPrediction,
+            measures: dist
         });
     }
 
@@ -39,22 +42,33 @@ export default class Segmentation extends React.Component {
     }
 
     async makeSegmentation() {
-        segmentation = await this.makeMSegmentationImageLOCALE();
+        const outputStride = 16;
+        const segmentationThreshold = 0.5;
+        //const uri = await this.uploadImage();
+        const response = await fetch("https://i.imgur.com/BwxtrEq.jpg", {}, {isBinary: true});
+        const rawImageData = await response.arrayBuffer();
+        const imageTensor = this.imageToTensor(rawImageData).resizeBilinear([224, 224]);
+        segmentation = await segmentationModel.segmentPersonParts(imageTensor, outputStride, segmentationThreshold);
+        console.log(segmentation.allPoses);
+    };
+
+    async getMeasures() {
         return 0;
     }
 
-    async makeMSegmentationImageLOCALE() {
-        const outputStride = 16;
-        const segmentationThreshold = 0.5;
-        const image = require('../assets/images/face.jpeg');
-        const imageAssetPath = Image.resolveAssetSource(image);
-        const response = await fetch(imageAssetPath.uri, {}, {isBinary: true});
-        const rawImageData = await response.arrayBuffer();
-        const imageTensor = this.imageToTensor(rawImageData).resizeBilinear([224, 224]);
-        const res = await segmentationModel.segmentPersonParts(imageTensor, outputStride, segmentationThreshold);
-        console.log("res", res);
-        return res;
-    };
+    async uploadImage() {
+        const imgBody = new FormData();
+        imgBody.append('image', this.props.route.params.capturedImage);
+        const imageLink = await fetch("https://api.imgur.com/3/image/", {
+            method: "POST",
+            headers: {
+                Authorization: "Client-ID 8758076786d0dd1"
+            },
+            body: imgBody
+        }).then(data => data.json()).then(res => res.data.link);
+        console.log(imageLink);
+        return imageLink;
+    }
 
     imageToTensor(rawImageData) {
         //Function to convert jpeg image to tensors
@@ -72,15 +86,13 @@ export default class Segmentation extends React.Component {
         return tf.tensor3d(buffer, [height, width, 3]);
     }
 
-
     renderInitialization() {
         return (
             <View style={styles.container}>
-                <Image source={require('../assets/images/face.jpeg')} ref={this.imageRef}/>
+                <Image source={require('../assets/images/face.jpeg')}/>
             </View>
         );
     }
-
 
     render() {
         return (
