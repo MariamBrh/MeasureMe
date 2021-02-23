@@ -6,7 +6,6 @@ import { fetch, decodeJpeg} from '@tensorflow/tfjs-react-native';
 
 
 
-
 // Position of camera preview.
 const previewLeft = 40;
 const previewTop = 20;
@@ -24,6 +23,7 @@ export default class Segmentation extends React.Component {
     this.state = {
       isTfReady: false,
       mobilenetClasses: [],
+      image: this.props.route.params.capturedImage,
     };
   }
 
@@ -62,11 +62,13 @@ export default class Segmentation extends React.Component {
   }
 
   async makeModelSegmentationImage() {
+    console.log("entered")
     const outputStride = 16;
     const segmentationThreshold = 0.5;
     const image = require('../assets/images/inconu.jpg');
     const imageAssetPath = Image.resolveAssetSource(image);
     const response = await fetch(imageAssetPath.uri, {}, { isBinary: true });
+    console.log("fetch done !")
     const rawImageData = await response.arrayBuffer();
     const raw = new Uint8Array(rawImageData);
     const imageTensor = decodeJpeg(raw);
@@ -77,6 +79,7 @@ export default class Segmentation extends React.Component {
     return (
         <View style={styles.container}>
           <Text>Distance {this.state.mobilenetClasses}</Text>
+          <Image style={styles.catImage} source={{uri: `${this.state.image.uri}`}} id="image"/>
         </View>
     );
   }
