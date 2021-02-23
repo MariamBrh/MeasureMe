@@ -3,6 +3,7 @@ import {StatusBar} from 'expo-status-bar'
 import React from 'react'
 import {StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image} from 'react-native'
 import {Camera} from 'expo-camera'
+import { Icon } from 'react-native-elements'
 
 let camera: Camera
 
@@ -17,6 +18,7 @@ export default function Picture() {
 	const [capturedImage, setCapturedImage] = React.useState(null)
 	const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
 	const [flashMode, setFlashMode] = React.useState('off')
+	const [autoFocus, setAutoFocus] = React.useState(Camera.Constants.AutoFocus.on)
 
 	const __startCamera = async () => {
 		const {status} = await Camera.requestPermissionsAsync()
@@ -59,6 +61,10 @@ export default function Picture() {
 		}
 	}
 
+	const __handleAutoFocus = () => {
+		setAutoFocus('on')
+	}
+
 	const __switchCamera = () => {
 		if (cameraType === 'back') {
 			setCameraType('front')
@@ -82,6 +88,7 @@ export default function Picture() {
 						<Camera
 							type={cameraType}
 							flashMode={flashMode}
+							autoFocus={autoFocus}
 							style={{flex: 1}}
 							ref={(r) => {
 								camera = r
@@ -137,6 +144,18 @@ export default function Picture() {
 										>
 											{cameraType === 'front' ? '🤳' : '📷'}
 										</Text>
+									</TouchableOpacity>
+									<TouchableOpacity
+										onPress={__handleAutoFocus}
+										style={{
+											marginTop: 20,
+											borderRadius: '50%',
+											height: 25,
+											width: 25
+										}}
+									>
+										<Icon
+											name='center-focus-weak' />
 									</TouchableOpacity>
 								</View>
 								<View

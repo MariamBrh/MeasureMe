@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.5.0",
     "@ionic/react": "^5.5.4",
     "@ionic/react-router": "^5.5.4",
     "@react-native-community/async-storage": "^1.10.0",
@@ -35,6 +36,7 @@
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
     "react-native-camera": "git+https://git@github.com/react-native-community/react-native-camera.git",
+    "react-native-elements": "^3.2.0",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-reanimated": "~1.7.0",
