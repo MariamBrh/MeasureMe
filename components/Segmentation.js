@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import * as tf from '@tensorflow/tfjs';
 import * as bodyPix from '@tensorflow-models/body-pix';
 import {fetch} from '@tensorflow/tfjs-react-native';
@@ -105,17 +105,33 @@ export default class Segmentation extends React.Component {
 
     renderInitialization() {
         return (
+          <View style={styles.container}>
+          {this.state.isTfReady ? (<>
+
             <View style={styles.container}>
-                {this.state.isTfReady ? (<>
-                        <Text>Distance entre les deux épaules : {this.state.measures[0]}</Text>
-                        <Text>Distance entre les deux hanches : {this.state.measures[1]}</Text>
-                        <Text>Longueur de la jambe gauche : {this.state.measures[2]}</Text>
-                    </>) :
-                    (
-                        <Text>LOADING ...</Text>
-                    )
-                }
+            <Image style={{width:380, height: 460, marginLeft:17, marginTop :100}} source={require('../assets/mensuration.png')}/>
+            <Text style={styles.taille}> NC </Text>
+            <Text style={styles.epaule}> {this.state.measures[0]}</Text>
+            <Text style={styles.poitrine}> NC </Text>
+            <Text style={styles.tourDeTaille}> NC </Text>
+            <Text style={styles.hanche}> {this.state.measures[1]}</Text>
+            <Text style={styles.jambes}> {this.state.measures[2]}</Text>
             </View>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttontext} > Sauvegarder mes mensurations </Text>
+            </TouchableOpacity>
+
+            </>) :
+
+            (
+              <View style={styles.container}>
+              <Image style={{width:380, height: 460, marginLeft:17, marginTop :100}} source={require('../assets/mensuration.png')}/>
+              <Text style={styles.title}>LOADING...</Text>
+              </View>
+            )
+        }
+        </View>
+
         );
     }
 
@@ -125,16 +141,115 @@ export default class Segmentation extends React.Component {
         );
     }
 }
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flex :1,
+        backgroundColor: '#008080',
+
+    },
+    buttontext:{
+      color: 'white',
+      fontSize : 20,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginLeft: 50
+    },
+    button : {
+      position: 'absolute',
+      alignItems:'center',
+      width: 280,
+      borderRadius: 10,
+      backgroundColor: '#A2D9CE',
+      flexDirection: 'row',
+      height: 70,
+      marginLeft: 70,
+      marginTop: 600
+    },
+    title: {
+      marginTop: 30,
+      marginLeft: 100,
+  		paddingHorizontal:10,
+  		fontSize:40,
+  		fontWeight: "600",
+  		color:'white',
+    },
+    icon: {
+      width:70,
+      height: 120,
+      marginTop :600,
+      overflow: 'hidden',
+      marginLeft: 290
+
+    },
+    soustitre: {
+      marginVertical: 20,
+  		paddingHorizontal:10,
+  		fontSize:25,
+  		fontWeight: "600",
+  		color:'#A2D9CE',
+
     },
     catImage: {
-        width: 100,
-        height: 100,
-    }
+      width: 100,
+      height: 100,
+    },
+    text : {
+      marginVertical: 20,
+      color:'white',
+      fontSize:15,
+   },
+    taille :{
+      marginLeft: 335,
+      marginTop : 235,
+      position: 'absolute',
+      color:'black',
+      fontSize:15,
+      fontWeight: "bold"
+    },
+    epaule :{
+      marginLeft: 335,
+      marginTop : 280,
+      position: 'absolute',
+      color:'black',
+      fontWeight: "bold",
+      fontSize:15,
+
+    },
+    poitrine :{
+      marginLeft: 335,
+      marginTop : 330,
+      position: 'absolute',
+      color:'black',
+      fontWeight: "bold",
+      fontSize:15
+
+    },
+    tourDeTaille :{
+      marginLeft: 335,
+      marginTop : 380,
+      position: 'absolute',
+      color:'black',
+      fontWeight: "bold",
+      fontSize:15
+    },
+    hanche :{
+      marginLeft: 335,
+      marginTop : 425,
+      position: 'absolute',
+      color:'black',
+      fontWeight: "bold",
+      fontSize:15,
+
+    },
+    jambes :{
+      marginLeft: 335,
+      marginTop : 470,
+      position: 'absolute',
+      color:'black',
+      fontWeight: "bold",
+      fontSize:15,
+
+    },
+
+
 });

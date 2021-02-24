@@ -302,15 +302,11 @@ const styles = StyleSheet.create({
 	styleEc: {
 		color: "white",
 		fontWeight: "bold",
-		borderColor: "white",
-		borderWidth: 3,
-		fontSize:15,
-		fontFamily:"Times New Roman",
+		fontSize:16,
 		paddingLeft:30,
 		paddingRight:30,
 		textShadowColor:"#585858",
-		textShadowOffset:{width: 5, height: 3},
-		textShadowRadius:5,
+
 	}
 })
 
