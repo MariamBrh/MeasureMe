@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import * as tf from '@tensorflow/tfjs';
 import * as bodyPix from '@tensorflow-models/body-pix';
 import {fetch} from '@tensorflow/tfjs-react-native';
@@ -30,6 +30,7 @@ export default class Segmentation extends React.Component {
             isTfReady: true,
             measures: dist
         });
+        console.log("state", this.state.measures);
     }
 
     async loadSegmentationModel() {
@@ -53,8 +54,24 @@ export default class Segmentation extends React.Component {
     };
 
     async getMeasures() {
-        return 0;
+        const measureBetweenShoulders = this.getMeasureBetween(5, 6);
+        const measureBetweenHips = this.getMeasureBetween(11, 12);
+        const measureBetweenHipAndAnkle = this.getMeasureBetween(11, 15);
+
+        return [measureBetweenShoulders, measureBetweenHips, measureBetweenHipAndAnkle];
     }
+
+    getMeasureBetween(firstPointIndex, secondPointIndex) {
+        const {x: xLeftShoulder, y: yLeftShoulder} = segmentation.allPoses[0].keypoints[firstPointIndex].position;
+        const {x: xRightShoulder, y: yRightShoulder} = segmentation.allPoses[0].keypoints[secondPointIndex].position;
+
+        const xDist = Math.pow(xLeftShoulder - xRightShoulder, 2);
+        const yDist = Math.pow(yLeftShoulder - yRightShoulder, 2);
+        const distance = Math.sqrt(xDist + yDist).toFixed(2);
+        console.log("distance between both shoulders", distance);
+        return distance;
+    }
+
 
     async uploadImage() {
         const imgBody = new FormData();
@@ -89,7 +106,15 @@ export default class Segmentation extends React.Component {
     renderInitialization() {
         return (
             <View style={styles.container}>
-                <Image source={require('../assets/images/face.jpeg')}/>
+                {this.state.isTfReady ? (<>
+                        <Text>Distance entre les deux épaules : {this.state.measures[0]}</Text>
+                        <Text>Distance entre les deux hanches : {this.state.measures[1]}</Text>
+                        <Text>Longueur de la jambe gauche : {this.state.measures[2]}</Text>
+                    </>) :
+                    (
+                        <Text>LOADING ...</Text>
+                    )
+                }
             </View>
         );
     }
