@@ -17,7 +17,7 @@ export default class App extends React.Component {
   	return (
   		<NavigationContainer ref={navigationRef}>
       		<Stack.Navigator>
-        		<Stack.Screen name="Home" component={Picture} />
+                <Stack.Screen name="Picture" component={Picture} />
                 <Stack.Screen name="Segmentation" component={Segmentation} />
       		</Stack.Navigator>
     	</NavigationContainer>

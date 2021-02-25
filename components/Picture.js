@@ -7,6 +7,7 @@ import { Icon } from 'react-native-elements'
 import { Root, Popup } from 'popup-ui'
 
 let camera: Camera
+let nbPicture = 0
 
 import * as RootNavigation from './RootNavigation.js';
 import Segmentation from './Segmentation.js'
@@ -20,7 +21,7 @@ export default function Picture() {
 	const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
 	const [flashMode, setFlashMode] = React.useState('off')
 	const [autoFocus, setAutoFocus] = React.useState(Camera.Constants.AutoFocus.on)
-	const [nbPicture, setNbPicture] = React.useState(0)
+	const [tabPictures, setTabPictures] = React.useState([])
 
 	const __startCamera = async () => {
 		console.log("Photo n. "+nbPicture)
@@ -73,13 +74,8 @@ export default function Picture() {
 	}
 
 	const __savePhoto = (photo) => {
-		const tmp = nbPicture +1
-		if (nbPicture < 3) {
-			setNbPicture(tmp)
-			console.log("Photo + 1 = " , nbPicture)
-			__retakePicture()
-		}
-		else if (nbPicture == 3) {
+		if (nbPicture == 2) {
+			console.log(tabPictures)
 			Popup.show({
 				type: 'Success',
 				title: 'Informations',
@@ -88,6 +84,11 @@ export default function Picture() {
 				buttontext: 'Ok',
 				callback: () => {Popup.hide(), RootNavigation.navigate('Segmentation', {capturedImage:photo})}
 			})
+		}
+		else {
+			nbPicture = nbPicture + 1
+			setTabPictures([...tabPictures, photo.uri])
+			__retakePicture()
 		}
 	}
 
@@ -407,7 +408,7 @@ const CameraPreview = ({photo, retakePicture, savePhoto}) => {
 
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={savePhoto}
+							onPress={() => savePhoto(photo)}
 							style={{
 								width: 130,
 								height: 50,
