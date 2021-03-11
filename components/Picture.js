@@ -13,7 +13,7 @@ import * as RootNavigation from './RootNavigation.js';
 import Segmentation from './Segmentation.js'
 
 
-export default function Picture() {
+export default function Picture({navigation}) {
 
 	const [startCamera, setStartCamera] = React.useState(false)
 	const [previewVisible, setPreviewVisible] = React.useState(false)
@@ -123,6 +123,10 @@ export default function Picture() {
 		} else {
 			setCameraType('back')
 		}
+	}
+
+	const goToHistorical = () => {
+		navigation.navigate("Historique")
 	}
 
 	return (
@@ -261,62 +265,103 @@ export default function Picture() {
 						}}
 
 					>
-						<View style={styles.container}>
+						<View style={styles.img_container}>
 							<Image style={{width:150, height: 280, marginVertical: 100}}
 								   source={require('../assets/icon2.png')}/>
 							<Image style={{width:250, height: 90, marginVertical: -70}}
 								   source={require('../assets/logo.png')}/>
 
 						</View>
+						<View style={{padding:20,marginBottom:20}}>
+							<TouchableOpacity
 
-						<TouchableOpacity
-
-							onPress={__startCamera}
-
-							style={{
-
-								width: 130,
-
-								borderRadius: 10,
-
-								backgroundColor: '#A2D9CE',
-								fontFamily:"sans-serif-light",
-
-								flexDirection: 'row',
-
-								justifyContent: 'center',
-
-								alignItems: 'center',
-								marginVertical: 120,
-								paddingHorizontal:20,
-								height: 50
-
-							}}
-
-						>
-
-							<Text
+								onPress={__startCamera}
 
 								style={{
 
-									color: 'white',
+									width: 130,
 
-									fontSize : 20,
+									borderRadius: 10,
 
-									fontWeight: 'bold',
+									backgroundColor: '#A2D9CE',
+									fontFamily:"sans-serif-light",
 
-									textAlign: 'center'
+									flexDirection: 'row',
+
+									justifyContent: 'center',
+
+									alignItems: 'center',
+									// marginVertical: 120,
+									marginBottom:20,
+									paddingHorizontal:20,
+									height: 50
 
 								}}
 
 							>
 
-								Take Picture
+								<Text
 
-							</Text>
+									style={{
 
-						</TouchableOpacity>
+										color: 'white',
 
+										fontSize : 20,
+
+										fontWeight: 'bold',
+
+										textAlign: 'center'
+
+									}}
+
+								>
+
+									Take Picture
+
+								</Text>
+
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={goToHistorical}
+								style={{
+
+									width: 130,
+
+									borderRadius: 10,
+
+									backgroundColor: '#A2D9CE',
+									fontFamily:"sans-serif-light",
+
+									flexDirection: 'row',
+
+									justifyContent: 'center',
+
+									alignItems: 'center',
+									// marginVertical: 120,
+									paddingHorizontal:20,
+									height: 50
+
+									}}
+							>
+								<Text
+									style={{
+
+										color: 'white',
+
+										fontSize : 20,
+
+										fontWeight: 'bold',
+
+										textAlign: 'center'
+
+										}}
+								>
+								
+								Historical
+								
+								</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
 
 				)}
@@ -333,6 +378,12 @@ const styles = StyleSheet.create({
 		backgroundColor: '#008080',
 		alignItems: 'center',
 		justifyContent: 'center'
+	},
+	img_container:{
+		flex:1,
+		alignItems:'center',
+		justifyContent:'center',
+		marginBottom:150
 	},
 	logoText : {
 		marginVertical: 10,
