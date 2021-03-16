@@ -28,15 +28,15 @@ const Login = ({navigation}) => {
             <View style={styles.img_container}>
               <Image style={{width:150, height: 280, marginTop :30}} source={require('../assets/icon2.png')}/>
               <Image style={{width:250, height: 90,marginTop :20}} source={require('../assets/logo.png')}/>
-              <Text style={styles.text1}>Email</Text>
-              <TextInput defaultValue={email} onChangeText={(e)=>setemail(e)} style={styles.email}/>
-              <Text style={styles.text2}>Password</Text>
-              <TextInput defaultValue={password} onChangeText={(e)=>setpassword(e)} style={styles.password} secureTextEntry={true}/>
+              <Text style={styles.text1}>E-mail</Text>
+              <TextInput defaultValue={email} onChangeText={(e)=>setemail(e)} style={styles.inputBox}/>
+              <Text style={styles.text2}>Mot de passe</Text>
+              <TextInput defaultValue={password} onChangeText={(e)=>setpassword(e)} style={styles.inputBox} secureTextEntry={true}/>
               {/* <PasswordInputText Value={password} onChangeText={(e)=>setpassword(e)} style={{backgroundColor:'#A2D9CE'}}/> */}
-              <TouchableOpacity onPress={onSignIn}><Text style={styles.signupButton2}> SignIn</Text></TouchableOpacity>
+              <TouchableOpacity onPress={onSignIn}><Text style={styles.signInButton2}> Connexion</Text></TouchableOpacity>
               <View style={styles.signupTextCont}>
-              <Text style={styles.signupText}>Don't have an account yet?</Text>
-              <TouchableOpacity onPress={onRegister}><Text style={styles.signupButton}> SignUp</Text></TouchableOpacity>
+              <Text style={styles.signupText}>Pas encore de compte ?</Text>
+              <TouchableOpacity onPress={onRegister}><Text style={styles.signupButton}> S'inscrire</Text></TouchableOpacity>
               </View>
             </View>
         </View>
@@ -53,29 +53,20 @@ const styles = StyleSheet.create({
 		justifyContent:'center',
 		marginBottom:40
 	},
-	email: {
-    color:"#008080",
-    backgroundColor:'#BFD8D3',
-    height :30,
-    marginTop: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal:140,
-    borderRadius:10
-	},
-  password: {
-    color:"#008080",
-    backgroundColor:'#BFD8D3',
-    height :30,
-    marginTop: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal:140,
-    borderRadius:10
-	},
+
+  inputBox: {
+      height: 40,
+      width:300,
+      backgroundColor:'rgba(255, 255,255,0.2)',
+      borderRadius: 4,
+      paddingHorizontal:16,
+      fontSize:20,
+      color:'#ffffff',
+      marginVertical: 10
+    },
 	text1: {
     marginTop: 50,
-    marginRight: 230,
+    marginRight: 240,
     paddingHorizontal:20,
     fontSize:20,
     fontWeight: "600",
@@ -83,7 +74,7 @@ const styles = StyleSheet.create({
 	},
   text2: {
     marginTop: 20,
-    marginRight: 190,
+    marginRight:  180,
     paddingHorizontal:20,
     fontSize:20,
     fontWeight: "600",
@@ -106,11 +97,16 @@ const styles = StyleSheet.create({
   	fontSize:20,
   	fontWeight:'500'
   },
-  signupButton2: {
-    marginTop:30,
+  signInButton2: {
+
+    padding: 10,
+    backgroundColor: '#BFD8D3',
+    marginTop:20,
    	color:'white',
    	fontSize:20,
-   	fontWeight:'500'
+   	fontWeight:'500',
+    borderRadius:20,
+
    }
 })
 export default Login

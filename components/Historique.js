@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import {db} from '../firebase/firebase'
-import { View, Text, Alert} from 'react-native'
+import { View, Text, Alert,StyleSheet} from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 // import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
@@ -42,17 +42,18 @@ const Historique = () => {
                         <View style={{display:'flex' ,flexDirection:'column'}}>
                             <View style={{display:'flex',flexDirection:'row',alignItems:'center',borderBottomColor:"white",borderBottomWidth:1}} key={index}>
                                 <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:"70%"}}>
-                                    <Text>{doc.timestamp.toString()}</Text>
+                                    <Text style={styles.date}>{doc.timestamp.toString()}</Text>
                                 </View>
                                 <View>
-                                    <MaterialIcons.Button name={click==index ? "keyboard-arrow-down":"keyboard-arrow-right"} size={24} color="black" style={{backgroundColor:'#008080'}} onPress={()=>onPress(index)}/>
+                                    <MaterialIcons.Button name={click==index ? "keyboard-arrow-down":"keyboard-arrow-right"} size={25} color="white" style={{backgroundColor:'#008080'}} onPress={()=>onPress(index)}/>
                                 </View>
-                                
-                                
+
+
                             </View>
                             {
                                     click==index? (
                                         <View style={{backgroundColor:"white",padding:10, display:'flex', flexDirection:"row"}}><Text>Taille : </Text><Text>{doc.taille}</Text></View>
+
                                     ):null
                                 }
                         </View>
@@ -62,4 +63,17 @@ const Historique = () => {
     )
 }
 
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: '#008080',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	date:{
+		flex:1,
+		color:"white"
+	}
+
+})
 export default Historique
