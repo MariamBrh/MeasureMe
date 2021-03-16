@@ -26,6 +26,10 @@ const formatDate = () => {
         month = '0' + month;
     if (day.length < 2)
         day = '0' + day;
+    if (hours < 10)
+        hours = '0' + hours;
+    if (min < 10)
+        min = '0' + min;
     return [day, month, year].join('-')+" "+hours+":"+min;
 };
 
