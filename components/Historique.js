@@ -39,12 +39,7 @@ const Historique = () => {
             {
                 historique.map((doc, index) => {
                     return (
-                        /* <View key={doc.id}>
-                            <li>{doc.timestamp}</li>
-                            <li>{doc.taille}</li>
-                        </View> */
-
-                        <View style={{display: 'flex', flexDirection: 'column'}}>
+                        <View style={{display: 'flex', flexDirection: 'column'}} key={doc.id}>
                             <View style={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -73,20 +68,51 @@ const Historique = () => {
                             {
 
                                 click == index ? (
-                                    <>
+                                    <View>
                                         <View style={{
                                             backgroundColor: "white",
                                             padding: 10,
                                             display: 'flex',
                                             flexDirection: "row"
-                                        }}><Text>Taille : </Text><Text>{doc.taille}</Text></View>
+                                        }}><Text>Taille : {doc.taille}</Text>
+                                        </View>
                                         <View style={{
                                             backgroundColor: "white",
                                             padding: 10,
                                             display: 'flex',
                                             flexDirection: "row"
-                                        }}><Text>Épaule : </Text><Text>{doc.epaule}</Text></View>
-                                    </>
+                                        }}><Text>Épaule : {doc.epaule}</Text>
+                                        </View>
+                                        <View style={{
+                                            backgroundColor: "white",
+                                            padding: 10,
+                                            display: 'flex',
+                                            flexDirection: "row"
+                                        }}><Text>Poitrine : {doc.poitrine}</Text>
+                                        </View>
+                                        <View style={{
+                                            backgroundColor: "white",
+                                            padding: 10,
+                                            display: 'flex',
+                                            flexDirection: "row"
+                                        }}>
+                                            <Text>Tour de taille : {doc.tourDeTaille}</Text>
+                                        </View>
+                                        <View style={{
+                                            backgroundColor: "white",
+                                            padding: 10,
+                                            display: 'flex',
+                                            flexDirection: "row"
+                                        }}><Text>Hanche : {doc.hanche}</Text>
+                                        </View>
+                                        <View style={{
+                                            backgroundColor: "white",
+                                            padding: 10,
+                                            display: 'flex',
+                                            flexDirection: "row"
+                                        }}><Text>Jambes : {doc.jambes}</Text>
+                                        </View>
+                                    </View>
                                 ) : null
                             }
 
