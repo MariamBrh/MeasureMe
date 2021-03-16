@@ -1,79 +1,114 @@
-import React,{useState,useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {db} from '../firebase/firebase'
-import { View, Text, Alert,StyleSheet} from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons';
-// import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import {View, Text, Alert, StyleSheet} from 'react-native'
+import {MaterialIcons} from '@expo/vector-icons';
+import SyncStorage from 'sync-storage';
 
 const Historique = () => {
 
     const [historique, sethistorique] = useState([])
-    const [click,setclick] = useState(false)
+    const [click, setclick] = useState(false)
+    const user = SyncStorage.get('user');
 
     useEffect(() => {
-        db.collection("infostest").orderBy("date","desc").onSnapshot((snapshot)=>{
-            sethistorique(snapshot.docs.map((doc)=>({
-                id:doc.id,
-                taille:doc.data().taille,
-                timestamp:doc.data().timestamp
+        db.collection("users").doc(user.email).collection("mensurations").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+            sethistorique(snapshot.docs.map((doc) => ({
+                id: doc.id,
+                taille: doc.data().taille,
+                epaule: doc.data().epaule,
+                poitrine: doc.data().poitrine,
+                tourDeTaille: doc.data().tourDeTaille,
+                hanche: doc.data().hanche,
+                jambes: doc.data().jambes,
+                date: doc.data().date
             })))
         })
-    }, [])
+    }, []);
 
     const onPress = (index) => {
-        if(click==index){
+        if (click == index) {
             setclick(null)
-        }
-        else
-        {
+        } else {
             setclick(index)
         }
-    }
+    };
 
 
     return (
-        <View style={{backgroundColor:'#008080',height:"100%"}}>
+        <View style={{backgroundColor: '#008080', height: "100%"}}>
             {
-                historique.map((doc,index)=>{
-                    return(
+                historique.map((doc, index) => {
+                    return (
                         /* <View key={doc.id}>
                             <li>{doc.timestamp}</li>
                             <li>{doc.taille}</li>
                         </View> */
-                        <View style={{display:'flex' ,flexDirection:'column'}}>
-                            <View style={{display:'flex',flexDirection:'row',alignItems:'center',borderBottomColor:"white",borderBottomWidth:1}} key={index}>
-                                <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:"70%"}}>
-                                    <Text style={styles.date}>{doc.timestamp.toString()}</Text>
+
+                        <View style={{display: 'flex', flexDirection: 'column'}}>
+                            <View style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                borderBottomColor: "white",
+                                borderBottomWidth: 1
+                            }} key={index}>
+                                <View style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    width: "70%"
+                                }}>
+                                    <Text style={styles.date}>{doc.date.toString()}</Text>
                                 </View>
                                 <View>
-                                    <MaterialIcons.Button name={click==index ? "keyboard-arrow-down":"keyboard-arrow-right"} size={25} color="white" style={{backgroundColor:'#008080'}} onPress={()=>onPress(index)}/>
+                                    <MaterialIcons.Button
+                                        name={click == index ? "keyboard-arrow-down" : "keyboard-arrow-right"} size={25}
+                                        color="white" style={{backgroundColor: '#008080'}}
+                                        onPress={() => onPress(index)}/>
+
                                 </View>
 
 
                             </View>
                             {
-                                    click==index? (
-                                        <View style={{backgroundColor:"white",padding:10, display:'flex', flexDirection:"row"}}><Text>Taille : </Text><Text>{doc.taille}</Text></View>
 
-                                    ):null
-                                }
+                                click == index ? (
+                                    <>
+                                        <View style={{
+                                            backgroundColor: "white",
+                                            padding: 10,
+                                            display: 'flex',
+                                            flexDirection: "row"
+                                        }}><Text>Taille : </Text><Text>{doc.taille}</Text></View>
+                                        <View style={{
+                                            backgroundColor: "white",
+                                            padding: 10,
+                                            display: 'flex',
+                                            flexDirection: "row"
+                                        }}><Text>Épaule : </Text><Text>{doc.epaule}</Text></View>
+                                    </>
+                                ) : null
+                            }
+
                         </View>
-                    )})
+                    )
+                })
             }
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#008080',
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	date:{
-		flex:1,
-		color:"white"
-	}
+    container: {
+        flex: 1,
+        backgroundColor: '#008080',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    date: {
+        flex: 1,
+        color: "white"
+    }
 
 })
 export default Historique
