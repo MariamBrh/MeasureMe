@@ -277,88 +277,21 @@ export default function Picture({navigation}) {
 
 								onPress={__startCamera}
 
-								style={{
+								style={styles.button}>
 
-									width: 130,
-
-									borderRadius: 10,
-
-									backgroundColor: '#A2D9CE',
-									fontFamily:"sans-serif-light",
-
-									flexDirection: 'row',
-
-									justifyContent: 'center',
-
-									alignItems: 'center',
-									// marginVertical: 120,
-									marginBottom:20,
-									paddingHorizontal:20,
-									height: 50
-
-								}}
-
-							>
-
-								<Text
-
-									style={{
-
-										color: 'white',
-
-										fontSize : 20,
-
-										fontWeight: 'bold',
-
-										textAlign: 'center'
-
-									}}
-
-								>
-
-									Take Picture
-
-								</Text>
+								<Text style={styles.takepicture}>Prendre une photo</Text>
 
 							</TouchableOpacity>
 							<TouchableOpacity
 								onPress={goToHistorical}
-								style={{
-
-									width: 130,
-
-									borderRadius: 10,
-
-									backgroundColor: '#A2D9CE',
-									fontFamily:"sans-serif-light",
-
-									flexDirection: 'row',
-
-									justifyContent: 'center',
-
-									alignItems: 'center',
-									// marginVertical: 120,
-									paddingHorizontal:20,
-									height: 50
-
-									}}
+								style={styles.button}
 							>
 								<Text
-									style={{
-
-										color: 'white',
-
-										fontSize : 20,
-
-										fontWeight: 'bold',
-
-										textAlign: 'center'
-
-										}}
+									style={styles.takepicture}
 								>
-								
-								Historical
-								
+
+								Historique
+
 								</Text>
 							</TouchableOpacity>
 						</View>
@@ -412,7 +345,25 @@ const styles = StyleSheet.create({
 		paddingRight:30,
 		textShadowColor:"#585858",
 
+	},
+	takepicture: {
+		color:'white',
+		fontSize:25,
+		fontWeight: "700",
+	},
+	button: {
+		width: 260,
+		borderRadius: 10,
+		backgroundColor: '#A2D9CE',
+		fontFamily:"sans-serif-light",
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginBottom:10,
+		height: 50
 	}
+
+
 })
 
 const CameraPreview = ({photo, retakePicture, savePhoto}) => {
