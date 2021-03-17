@@ -6,27 +6,27 @@ import {Camera} from 'expo-camera'
 import { Icon } from 'react-native-elements'
 import { Root, Popup } from 'popup-ui'
 
-let camera: Camera
-let nbPicture = 0
+let camera: Camera;
+let nbPicture = 0;
 
 import * as RootNavigation from './RootNavigation.js';
 import Segmentation from './Segmentation.js'
+import {getScale, uploadImage} from "../utils/utils";
 
 
 export default function Picture({navigation}) {
 
-	const [startCamera, setStartCamera] = React.useState(false)
-	const [previewVisible, setPreviewVisible] = React.useState(false)
-	const [capturedImage, setCapturedImage] = React.useState(null)
-	const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
-	const [flashMode, setFlashMode] = React.useState('off')
-	const [autoFocus, setAutoFocus] = React.useState(Camera.Constants.AutoFocus.on)
-	const [tabPictures, setTabPictures] = React.useState([])
+	const [startCamera, setStartCamera] = React.useState(false);
+	const [previewVisible, setPreviewVisible] = React.useState(false);
+	const [capturedImage, setCapturedImage] = React.useState(null);
+	const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back);
+	const [flashMode, setFlashMode] = React.useState('off');
+	const [autoFocus, setAutoFocus] = React.useState(Camera.Constants.AutoFocus.on);
+	const [tabPictures, setTabPictures] = React.useState([]);
 
 	const __startCamera = async () => {
-		console.log("Photo n. "+nbPicture)
-		const {status} = await Camera.requestPermissionsAsync()
-		console.log(status)
+		console.log("Photo n. "+nbPicture);
+		const {status} = await Camera.requestPermissionsAsync();
 		if (status === 'granted') {
 			setStartCamera(true)
 		} else {
@@ -63,45 +63,47 @@ export default function Picture({navigation}) {
 				callback: () => Popup.hide()
 			})
 		}
-	}
+	};
 
 	const __takePicture = async () => {
-		const photo = await camera.takePictureAsync()
-		console.log(photo)
-		setPreviewVisible(true)
-		//setStartCamera(false)
+		const photo = await camera.takePictureAsync();
+		console.log(photo);
+		setPreviewVisible(true);
 		setCapturedImage(photo)
-	}
+	};
 
-	const __savePhoto = (photo) => {
+	const __savePhoto = async (photo) => {
+		const imgurUri = await uploadImage(photo);
+		setTabPictures([...tabPictures,imgurUri]);
+		console.log("imgurUri",imgurUri);
+		console.log("tabPictures",tabPictures);
 		if (nbPicture == 2) {
-			console.log(tabPictures)
+			console.log(tabPictures);
 			Popup.show({
 				type: 'Success',
 				title: 'Informations',
 				button: true,
 				textBody: 'Toutes vos photos ont bien été enregistrées.',
 				buttontext: 'Ok',
-				callback: () => {Popup.hide(), RootNavigation.navigate('Segmentation', {capturedImage:photo})}
+				callback: () => {Popup.hide(), RootNavigation.navigate('Segmentation', {images: [tabPictures[1],tabPictures[2]],scale: getScale(tabPictures[0])})}
 			})
 		}
 		else {
-			nbPicture = nbPicture + 1
-			setTabPictures([...tabPictures, photo.uri])
+			nbPicture = nbPicture + 1;
+			setTabPictures([...tabPictures,imgurUri]);
 			__retakePicture()
 		}
-	}
+	};
 
-	const __segmentPhoto = () => {
-		console.log(capturedImage.uri)
-		//return capturedImage
-	}
+
+
+
 
 	const __retakePicture = () => {
-		setCapturedImage(null)
-		setPreviewVisible(false)
+		setCapturedImage(null);
+		setPreviewVisible(false);
 		__startCamera()
-	}
+	};
 
 	const __handleFlashMode = () => {
 		if (flashMode === 'on') {
@@ -111,11 +113,11 @@ export default function Picture({navigation}) {
 		} else {
 			setFlashMode('auto')
 		}
-	}
+	};
 
 	const __handleAutoFocus = () => {
 		setAutoFocus('on')
-	}
+	};
 
 	const __switchCamera = () => {
 		if (cameraType === 'back') {
@@ -123,11 +125,11 @@ export default function Picture({navigation}) {
 		} else {
 			setCameraType('back')
 		}
-	}
+	};
 
 	const goToHistorical = () => {
 		navigation.navigate("Historique")
-	}
+	};
 
 	return (
 		<Root>

@@ -6,52 +6,12 @@ import {fetch} from '@tensorflow/tfjs-react-native';
 import * as jpeg from 'jpeg-js'
 import {BodyPix} from "@tensorflow-models/body-pix";
 import {Pose} from "@tensorflow-models/body-pix/dist/types";
-import {db} from '../firebase/firebase'
-import firebase from "firebase";
-import SyncStorage from 'sync-storage';
+import {handleSave, loadSegmentationModel} from "../utils/utils";
 
 
 let segmentationModel: BodyPix;
 let segmentation: Pose[];
 
-const formatDate = () => {
-    var d = new Date();
-    var month = '' + (d.getMonth() + 1);
-    var day = '' + d.getDate();
-    var year = d.getFullYear();
-    var hours = d.getHours();
-    var min = d.getMinutes();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    if (hours < 10)
-        hours = '0' + hours;
-    if (min < 10)
-        min = '0' + min;
-    return [day, month, year].join('-')+" "+hours+":"+min;
-};
-
-const handleSave = () => {
-
-    const user = SyncStorage.get('user');
-    if (user)
-    {
-        var unix_timestamp = firebase.firestore.FieldValue.serverTimestamp();
-        db.collection("users").doc(user.email).collection("mensurations").add({
-                taille: "340",
-                epaule: "280",
-                poitrine: "100",
-                tourDeTaille: "NC",
-                hanche: "27",
-                jambes: "10",
-                timestamp: unix_timestamp,
-                date: formatDate()
-            }
-        )
-    }
-};
 
 export default class Segmentation extends React.Component {
     constructor(props) {
@@ -59,47 +19,52 @@ export default class Segmentation extends React.Component {
         this.state = {
             isTfReady: true,
             measures: [],
-            image: this.props.route.params.capturedImage
+            images: this.props.route.params.images,
+            scale: this.props.route.params.scale
         };
     }
 
     async componentDidMount() {
-        /*await tf.ready();
-        segmentationModel = await this.loadSegmentationModel();
-        await this.makeSegmentation();
+        await tf.ready();
+        segmentationModel = await loadSegmentationModel();
+        segmentation = await this.makeSegmentation();
         const dist = await this.getMeasures();
         this.setState({
             isTfReady: true,
             measures: dist
-        });*/
-        console.log("state", this.state.measures);
-    }
-
-    async loadSegmentationModel() {
-        return await bodyPix.load({
-            architecture: "MobileNetV1",
-            outputStride: 16,
-            multiplier: 0.75,
-            quantBytes: 2,
         });
     }
 
-    async makeSegmentation() {
+    async makeSegmentation(){
         const outputStride = 16;
         const segmentationThreshold = 0.5;
-        //const uri = await this.uploadImage();
-        const response = await fetch("https://i.imgur.com/BwxtrEq.jpg", {}, {isBinary: true});
+        const response = await fetch("https://imgur.com/JSVr1fl.jpeg", {}, {isBinary: true});
         const rawImageData = await response.arrayBuffer();
         const imageTensor = this.imageToTensor(rawImageData).resizeBilinear([224, 224]);
-        segmentation = await segmentationModel.segmentPersonParts(imageTensor, outputStride, segmentationThreshold);
-        console.log(segmentation.allPoses);
+        return await segmentationModel.segmentPersonParts(imageTensor, outputStride, segmentationThreshold);
     };
+
+    imageToTensor = (rawImageData) => {
+        //Function to convert jpeg image to tensors
+        const TO_UINT8ARRAY = true;
+        const {width, height, data} = jpeg.decode(rawImageData, TO_UINT8ARRAY);
+        // Drop the alpha channel info for mobilenet
+        const buffer = new Uint8Array(width * height * 3);
+        let offset = 0; // offset into original data
+        for (let i = 0; i < buffer.length; i += 3) {
+            buffer[i] = data[offset];
+            buffer[i + 1] = data[offset + 1];
+            buffer[i + 2] = data[offset + 2];
+            offset += 4;
+        }
+        return tf.tensor3d(buffer, [height, width, 3]);
+    };
+
 
     async getMeasures() {
         const measureBetweenShoulders = this.getMeasureBetween(5, 6);
         const measureBetweenHips = this.getMeasureBetween(11, 12);
         const measureBetweenHipAndAnkle = this.getMeasureBetween(11, 15);
-
         return [measureBetweenShoulders, measureBetweenHips, measureBetweenHipAndAnkle];
     }
 
@@ -115,50 +80,18 @@ export default class Segmentation extends React.Component {
     }
 
 
-    async uploadImage() {
-        const imgBody = new FormData();
-        imgBody.append('image', this.props.route.params.capturedImage);
-        const imageLink = await fetch("https://api.imgur.com/3/image/", {
-            method: "POST",
-            headers: {
-                Authorization: "Client-ID 8758076786d0dd1"
-            },
-            body: imgBody
-        }).then(data => data.json()).then(res => res.data.link);
-        console.log(imageLink);
-        return imageLink;
-    }
-
-    imageToTensor(rawImageData) {
-        //Function to convert jpeg image to tensors
-        const TO_UINT8ARRAY = true;
-        const {width, height, data} = jpeg.decode(rawImageData, TO_UINT8ARRAY);
-        // Drop the alpha channel info for mobilenet
-        const buffer = new Uint8Array(width * height * 3);
-        let offset = 0; // offset into original data
-        for (let i = 0; i < buffer.length; i += 3) {
-            buffer[i] = data[offset];
-            buffer[i + 1] = data[offset + 1];
-            buffer[i + 2] = data[offset + 2];
-            offset += 4;
-        }
-        return tf.tensor3d(buffer, [height, width, 3]);
-    }
-
-
     renderInitialization() {
         return (
             <View style={styles.container}>
                 {this.state.isTfReady ? (<>
-
                         <View style={styles.container}>
                             <Image style={{width:380, height: 460, marginLeft:17, marginTop :100}} source={require('../assets/mensuration.png')}/>
                             <Text style={styles.taille}> NC </Text>
-                            <Text style={styles.epaule}> {this.state.measures[0]}</Text>
+                            <Text style={styles.epaule}> {(this.state.measures[0]*24)/this.state.scale}</Text>
                             <Text style={styles.poitrine}> NC </Text>
                             <Text style={styles.tourDeTaille}> NC </Text>
-                            <Text style={styles.hanche}> {this.state.measures[1]}</Text>
-                            <Text style={styles.jambes}> {this.state.measures[2]}</Text>
+                            <Text style={styles.hanche}> {(this.state.measures[1]*24)/this.state.scale}</Text>
+                            <Text style={styles.jambes}> {(this.state.measures[2]*24)/this.state.scale}</Text>
                         </View>
                         <TouchableOpacity style={styles.button} onPress={handleSave}>
                             <Text style={styles.buttontext} > Sauvegarder mes mensurations </Text>
@@ -292,7 +225,5 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 15,
 
-    },
-
-
+    }
 });
