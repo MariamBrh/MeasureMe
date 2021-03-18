@@ -31,12 +31,12 @@ export const handleSave = () => {
     {
         var unix_timestamp = firebase.firestore.FieldValue.serverTimestamp();
         db.collection("users").doc(user.email).collection("mensurations").add({
-                taille: "340",
-                epaule: "280",
-                poitrine: "100",
+                taille: "171",
+                epaule: "39",
+                poitrine: "NC",
                 tourDeTaille: "NC",
-                hanche: "27",
-                jambes: "10",
+                hanche: "29",
+                jambes: "80",
                 timestamp: unix_timestamp,
                 date: formatDate()
             }
