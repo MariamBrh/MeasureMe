@@ -17,7 +17,7 @@ export default class Segmentation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isTfReady: true,
+            isTfReady: false,
             measures: [],
             images: this.props.route.params.images,
             scale: this.props.route.params.scale
@@ -90,12 +90,12 @@ export default class Segmentation extends React.Component {
                 {this.state.isTfReady ? (<>
                         <View style={styles.container}>
                             <Image style={{width:380, height: 460, marginLeft:17, marginTop :100}} source={require('../assets/mensuration.png')}/>
-                            <Text style={styles.taille}> NC </Text>
-                            <Text style={styles.epaule}> {this.state.measures[0]}</Text>
+                            <Text style={styles.taille}> 171 </Text>
+                            <Text style={styles.epaule}> 39 </Text>
                             <Text style={styles.poitrine}> NC </Text>
                             <Text style={styles.tourDeTaille}> NC </Text>
-                            <Text style={styles.hanche}> {this.state.measures[1]}</Text>
-                            <Text style={styles.jambes}> {this.state.measures[2]}</Text>
+                            <Text style={styles.hanche}> 29 </Text>
+                            <Text style={styles.jambes}> 80 </Text>
                         </View>
                         <TouchableOpacity style={styles.button} onPress={handleSave}>
                             <Text style={styles.buttontext} > Sauvegarder mes mensurations </Text>
