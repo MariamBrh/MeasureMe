@@ -18,7 +18,7 @@ L’idée est de développer une application mobile qui va guider le consommateu
 - Enregistrer les résultats   
  
 ## Dans ce dépôt :   
-* Le [rapport de projet](https://github.com/thomastrg/SeoulBikeDemand_DataAnalysis/raw/main/Report.pdf)
+* Le [rapport de projet](https://github.com/MariamBrh/MeasureMe/blob/main/materiel/rapport.pdf)
 * Le code de l'application en Javascript
 * Le code Python pour la calibration
 * Un [fichier pdf du damier](https://github.com/MariamBrh/MeasureMe/blob/branche/materiel/damier.pdf) avec lequel il faut prendre la première photo
