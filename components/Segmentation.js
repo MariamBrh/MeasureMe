@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import * as tf from '@tensorflow/tfjs';
 import * as bodyPix from '@tensorflow-models/body-pix';
-import {fetch} from '@tensorflow/tfjs-react-native';
+import { fetch, decodeJpeg} from '@tensorflow/tfjs-react-native';
 import * as jpeg from 'jpeg-js'
 import {BodyPix} from "@tensorflow-models/body-pix";
 import {Pose} from "@tensorflow-models/body-pix/dist/types";
@@ -38,9 +38,10 @@ export default class Segmentation extends React.Component {
     async makeSegmentation(){
         const outputStride = 16;
         const segmentationThreshold = 0.5;
-        const response = await fetch("https://imgur.com/JSVr1fl.jpeg", {}, {isBinary: true});
+        const response = await fetch("https://imgur.com/QCNOBPd.jpeg", {}, {isBinary: true});
         const rawImageData = await response.arrayBuffer();
-        const imageTensor = this.imageToTensor(rawImageData).resizeBilinear([224, 224]);
+        const raw = new Uint8Array(rawImageData);
+        const imageTensor = decodeJpeg(raw);
         return await segmentationModel.segmentPersonParts(imageTensor, outputStride, segmentationThreshold);
     };
 
@@ -62,21 +63,24 @@ export default class Segmentation extends React.Component {
 
 
     async getMeasures() {
+        console.log("segmentation.allPoses",segmentation.allPoses[0]);
         const measureBetweenShoulders = this.getMeasureBetween(5, 6);
+        console.log("Distance Epaule",measureBetweenShoulders);
         const measureBetweenHips = this.getMeasureBetween(11, 12);
+        console.log("Distance Hanche",measureBetweenHips);
         const measureBetweenHipAndAnkle = this.getMeasureBetween(11, 15);
+        console.log("Distance Jambe",measureBetweenHipAndAnkle);
         return [measureBetweenShoulders, measureBetweenHips, measureBetweenHipAndAnkle];
     }
 
     getMeasureBetween(firstPointIndex, secondPointIndex) {
         const {x: xLeftShoulder, y: yLeftShoulder} = segmentation.allPoses[0].keypoints[firstPointIndex].position;
         const {x: xRightShoulder, y: yRightShoulder} = segmentation.allPoses[0].keypoints[secondPointIndex].position;
-
         const xDist = Math.pow(xLeftShoulder - xRightShoulder, 2);
         const yDist = Math.pow(yLeftShoulder - yRightShoulder, 2);
-        const distance = Math.sqrt(xDist + yDist).toFixed(2);
-        console.log("distance between both shoulders", distance);
-        return distance;
+        const distance = Math.sqrt(xDist + yDist);
+        const distanceToScale = (distance * 24)/ this.state.scale;
+        return distanceToScale.toFixed(2);
     }
 
 
@@ -87,11 +91,11 @@ export default class Segmentation extends React.Component {
                         <View style={styles.container}>
                             <Image style={{width:380, height: 460, marginLeft:17, marginTop :100}} source={require('../assets/mensuration.png')}/>
                             <Text style={styles.taille}> NC </Text>
-                            <Text style={styles.epaule}> {(this.state.measures[0]*24)/this.state.scale}</Text>
+                            <Text style={styles.epaule}> {this.state.measures[0]}</Text>
                             <Text style={styles.poitrine}> NC </Text>
                             <Text style={styles.tourDeTaille}> NC </Text>
-                            <Text style={styles.hanche}> {(this.state.measures[1]*24)/this.state.scale}</Text>
-                            <Text style={styles.jambes}> {(this.state.measures[2]*24)/this.state.scale}</Text>
+                            <Text style={styles.hanche}> {this.state.measures[1]}</Text>
+                            <Text style={styles.jambes}> {this.state.measures[2]}</Text>
                         </View>
                         <TouchableOpacity style={styles.button} onPress={handleSave}>
                             <Text style={styles.buttontext} > Sauvegarder mes mensurations </Text>
