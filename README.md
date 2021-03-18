@@ -2,7 +2,7 @@
 
 ***
 <p align="center">
-  <img src="https://github.com/MariamBrh/MeasureMe/blob/branche/images/Mariam4.png" alt="drawing" width="500"/>
+  <img src="https://github.com/MariamBrh/MeasureMe/blob/main/images/Mariam4.png" alt="drawing" width="500"/>
 </p>
 
 **PRÉSENTATION GÉNÉRALE DU PROJET** 
@@ -21,20 +21,20 @@ L’idée est de développer une application mobile qui va guider le consommateu
 * Le [rapport de projet](https://github.com/MariamBrh/MeasureMe/blob/main/materiel/rapport.pdf)
 * Le code de l'application en Javascript
 * Le code Python pour la calibration
-* Un [fichier pdf du damier](https://github.com/MariamBrh/MeasureMe/blob/branche/materiel/damier.pdf) avec lequel il faut prendre la première photo
+* Un [fichier pdf du damier](https://github.com/MariamBrh/MeasureMe/blob/main/materiel/damier.pdf) avec lequel il faut prendre la première photo
 <br> 
 
 ## Calibration
 Utilisation d'une feuille en damier.  
-![logo](https://github.com/MariamBrh/MeasureMe/blob/branche/images/thomas_chessboard.PNG)
+![logo](https://github.com/MariamBrh/MeasureMe/blob/main/images/thomas_chessboard.PNG)
 
 ## Lancer le code
 - Lancer [Expo CLI](https://expo.io/) : commande npm start
 - Scanner le QR code
-<img src="https://github.com/MariamBrh/MeasureMe/blob/branche/images/expo.png" alt="drawing" width="200"/>
+<img src="https://github.com/MariamBrh/MeasureMe/blob/main/images/expo.png" alt="drawing" width="200"/>
 - L'application est lancée sur votre téléphone !
 
 ## Conclusion : 
 Rendu de l'application  
-<img src="https://github.com/MariamBrh/MeasureMe/blob/branche/images/image%204.png" alt="drawing" width="200"/>
-<img src="https://github.com/MariamBrh/MeasureMe/blob/branche/images/resultats.PNG" alt="drawing" width="200"/>
+<img src="https://github.com/MariamBrh/MeasureMe/blob/main/images/image%204.png" alt="drawing" width="200"/>
+<img src="https://github.com/MariamBrh/MeasureMe/blob/main/images/resultats.PNG" alt="drawing" width="200"/>
