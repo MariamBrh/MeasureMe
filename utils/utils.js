@@ -72,7 +72,7 @@ export const uploadImage = async (image)=> {
 
 export const getScale = async (uri)=> {
     const id = uri.slice(18);
-    const scale = await fetch(`http://3.18.220.26/predict/h9hbPWX.jpg`, {
+    const scale = await fetch(`http://3.18.220.26/predict/gvZeJYd.jpg`, {
         method: "POST"
     }).then(data => data._bodyText);
     console.log("scale",scale);

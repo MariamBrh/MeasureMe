@@ -67,25 +67,22 @@ export default function Picture({navigation}) {
 
 	const __takePicture = async () => {
 		const photo = await camera.takePictureAsync();
-		console.log(photo);
 		setPreviewVisible(true);
 		setCapturedImage(photo)
 	};
 
 	const __savePhoto = async (photo) => {
-		const imgurUri = await uploadImage(photo);
+		//const imgurUri = await uploadImage(photo);
+		const imgurUri = "";
 		setTabPictures([...tabPictures,imgurUri]);
-		console.log("imgurUri",imgurUri);
-		console.log("tabPictures",tabPictures);
 		if (nbPicture == 2) {
-			console.log(tabPictures);
 			Popup.show({
 				type: 'Success',
 				title: 'Informations',
 				button: true,
 				textBody: 'Toutes vos photos ont bien été enregistrées.',
 				buttontext: 'Ok',
-				callback: () => {Popup.hide(), RootNavigation.navigate('Segmentation', {images: [tabPictures[1],tabPictures[2]],scale: getScale(tabPictures[0])})}
+				callback: async () => {Popup.hide(), RootNavigation.navigate('Segmentation', {images: [tabPictures[1],tabPictures[2]],scale: await getScale(tabPictures[0])})}
 			})
 		}
 		else {
@@ -369,7 +366,7 @@ const styles = StyleSheet.create({
 })
 
 const CameraPreview = ({photo, retakePicture, savePhoto}) => {
-	console.log('sdsfds', photo)
+
 	return (
 		<View
 			style={{
