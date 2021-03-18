@@ -10,7 +10,8 @@ import {handleSave, loadSegmentationModel} from "../utils/utils";
 
 
 let segmentationModel: BodyPix;
-let segmentation: Pose[];
+let segmentationFace: Pose[];
+let segmentationProfil: Pose[];
 
 
 export default class Segmentation extends React.Component {
@@ -27,7 +28,8 @@ export default class Segmentation extends React.Component {
     async componentDidMount() {
         await tf.ready();
         segmentationModel = await loadSegmentationModel();
-        segmentation = await this.makeSegmentation();
+        segmentationFace = await this.makeSegmentation(this.state.images[0]);
+        segmentationProfil = await this.makeSegmentation(this.state.images[1]);
         const dist = await this.getMeasures();
         this.setState({
             isTfReady: true,
@@ -35,45 +37,24 @@ export default class Segmentation extends React.Component {
         });
     }
 
-    async makeSegmentation(){
+    async makeSegmentation(url){
         const outputStride = 16;
         const segmentationThreshold = 0.5;
-        const response = await fetch("https://imgur.com/QCNOBPd.jpeg", {}, {isBinary: true});
+        const response = await fetch(`${url.slice(27)}.jpeg`, {}, {isBinary: true});
         const rawImageData = await response.arrayBuffer();
         const raw = new Uint8Array(rawImageData);
         const imageTensor = decodeJpeg(raw);
         return await segmentationModel.segmentPersonParts(imageTensor, outputStride, segmentationThreshold);
     };
 
-    imageToTensor = (rawImageData) => {
-        //Function to convert jpeg image to tensors
-        const TO_UINT8ARRAY = true;
-        const {width, height, data} = jpeg.decode(rawImageData, TO_UINT8ARRAY);
-        // Drop the alpha channel info for mobilenet
-        const buffer = new Uint8Array(width * height * 3);
-        let offset = 0; // offset into original data
-        for (let i = 0; i < buffer.length; i += 3) {
-            buffer[i] = data[offset];
-            buffer[i + 1] = data[offset + 1];
-            buffer[i + 2] = data[offset + 2];
-            offset += 4;
-        }
-        return tf.tensor3d(buffer, [height, width, 3]);
-    };
-
-
     async getMeasures() {
-        console.log("segmentation.allPoses",segmentation.allPoses[0]);
-        const measureBetweenShoulders = this.getMeasureBetween(5, 6);
-        console.log("Distance Epaule",measureBetweenShoulders);
-        const measureBetweenHips = this.getMeasureBetween(11, 12);
-        console.log("Distance Hanche",measureBetweenHips);
-        const measureBetweenHipAndAnkle = this.getMeasureBetween(11, 15);
-        console.log("Distance Jambe",measureBetweenHipAndAnkle);
+        const measureBetweenShoulders = this.getMeasureBetween(5, 6,segmentationFace);
+        const measureBetweenHips = this.getMeasureBetween(11, 12,segmentationFace);
+        const measureBetweenHipAndAnkle = this.getMeasureBetween(11, 15,segmentationProfil);
         return [measureBetweenShoulders, measureBetweenHips, measureBetweenHipAndAnkle];
     }
 
-    getMeasureBetween(firstPointIndex, secondPointIndex) {
+    getMeasureBetween(firstPointIndex, secondPointIndex,segmentation) {
         const {x: xLeftShoulder, y: yLeftShoulder} = segmentation.allPoses[0].keypoints[firstPointIndex].position;
         const {x: xRightShoulder, y: yRightShoulder} = segmentation.allPoses[0].keypoints[secondPointIndex].position;
         const xDist = Math.pow(xLeftShoulder - xRightShoulder, 2);
@@ -90,12 +71,12 @@ export default class Segmentation extends React.Component {
                 {this.state.isTfReady ? (<>
                         <View style={styles.container}>
                             <Image style={{width:380, height: 460, marginLeft:17, marginTop :100}} source={require('../assets/mensuration.png')}/>
-                            <Text style={styles.taille}> 171 </Text>
-                            <Text style={styles.epaule}> 39 </Text>
+                            <Text style={styles.taille}> {this.state.measures[0]} </Text>
+                            <Text style={styles.epaule}> {this.state.measures[1]} </Text>
                             <Text style={styles.poitrine}> NC </Text>
                             <Text style={styles.tourDeTaille}> NC </Text>
-                            <Text style={styles.hanche}> 29 </Text>
-                            <Text style={styles.jambes}> 80 </Text>
+                            <Text style={styles.hanche}> {this.state.measures[2]} </Text>
+                            <Text style={styles.jambes}> {this.state.measures[3]} </Text>
                         </View>
                         <TouchableOpacity style={styles.button} onPress={handleSave}>
                             <Text style={styles.buttontext} > Sauvegarder mes mensurations </Text>

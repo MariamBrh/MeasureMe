@@ -72,8 +72,7 @@ export default function Picture({navigation}) {
 	};
 
 	const __savePhoto = async (photo) => {
-		//const imgurUri = await uploadImage(photo);
-		const imgurUri = "";
+		const imgurUri = await uploadImage(photo);
 		setTabPictures([...tabPictures,imgurUri]);
 		if (nbPicture == 2) {
 			Popup.show({
