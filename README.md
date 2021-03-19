@@ -19,7 +19,7 @@ L’idée est de développer une application mobile qui va guider le consommateu
  
 ## Dans ce dépôt :   
 * Le [rapport de projet](https://github.com/MariamBrh/MeasureMe/blob/main/materiel/rapport.pdf)
-* Le code de l'application en Javascript
+* Le [code de l'application en Javascript](https://github.com/MariamBrh/MeasureMe/blob/main/App.js)
 * Le [code Python](https://github.com/MariamBrh/MeasureMe/blob/main/API/app.py) pour la calibration
 * Un [fichier pdf du damier](https://github.com/MariamBrh/MeasureMe/blob/main/materiel/damier.pdf) avec lequel il faut prendre la première photo
 <br> 
